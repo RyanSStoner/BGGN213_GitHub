@@ -1,0 +1,50 @@
+---
+title: "Class 6 Homework"
+author: "Ryan Stoner (A69034955)"
+format: pdf
+---
+
+First I install bio3d. `install.packages("bio3d")`
+
+```{r}
+# Can you improve this analysis code?
+library(bio3d)
+s1 <- read.pdb("4AKE") # kinase with drug
+s2 <- read.pdb("1AKE") # kinase no drug
+s3 <- read.pdb("1E4Y") # kinase with drug
+s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s2.chainA <- trim.pdb(s2, chain="A", elety="CA")
+s3.chainA <- trim.pdb(s3, chain="A", elety="CA")
+s1.b <- s1.chainA$atom$b
+s2.b <- s2.chainA$atom$b
+s3.b <- s3.chainA$atom$b
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+plotb3(s2.b, sse=s2.chainA, typ="l", ylab="Bfactor")
+plotb3(s3.b, sse=s3.chainA, typ="l", ylab="Bfactor")
+```
+To improve this code, I will make a function called easyPDB to automatically perform the PDB search. 
+
+```{r}
+
+library(bio3d)
+
+#The input to the function is the variable "pdb", which is the PDB code of the protein you are trying to look up. 
+
+#The function first uses the read.pdb to pull up the proteins coordinate file from the pdb, then trims that result to only the A chain using the trim.pdb function. plotb3 is then used to generate a scatter plot containing per residue information from the protein. 
+
+easyPDB <- function(pdb){
+  s1 <- read.pdb(pdb)
+  s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
+  s1.b <- s1.chainA$atom$b
+  plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+  
+}
+
+```
+Now I will use sapply to generate plots for all 3 of the PDB codes.
+
+
+```{r}
+sapply(c("4AKE", "1AKE", "1E4Y"), easyPDB)
+```
+

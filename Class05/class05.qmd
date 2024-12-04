@@ -1,0 +1,153 @@
+---
+title: "Class 05: Data Visualization with GGPlot"
+author: "Ryan (A69034955)"
+format: html
+---
+
+R has lots of ways to make figures and graphs. 
+One that comes with R is called **"base" R** - the `plot()` function.
+
+```{r}
+plot(cars)
+```
+
+A very popular package in R is called **ggplot2**
+
+Bfore using any addon package I must install it with the `install.packages("ggplot2")` command/funtion. 
+
+Then to use the package I need to load it using `library(ggplot2)` call.
+
+```{r}
+library(ggplot2)
+
+ggplot(cars) + 
+  aes(x=speed, y=dist) +
+  geom_point()
+```
+
+For "simple" plots like this, base R is much simpler than using ggplot. 
+
+Let's fit a model and show it on my plot. 
+
+```{r}
+
+library(ggplot2)
+
+ggplot(cars) + 
+  aes(x=speed, y=dist) +
+  geom_point()+
+  geom_smooth()
+
+```
+
+Every ggplot has at least 3 layers
+
+- **data** (data.frame with the numbers and stuff you want to plot)
+- **aes**thetics (mapping of you data columns to your plot)
+- **geom**s (there are many, basics are `geom_points()`, `geom_line()`, and `geom_cols()`)
+
+```{r}
+
+mtcars
+ggplot(mtcars) + 
+  aes(x=mpg, y=disp, size=hp, color=am)+
+  geom_point()+
+  geom_smooth()
+
+```
+
+Now color all parts blue
+`install.packages("ggrepel")`
+
+```{r}
+library(ggrepel)
+
+ggplot(mtcars) + 
+  aes(x=mpg, y=disp, label=rownames(mtcars), color=am)+
+  geom_point()+
+  facet_wrap(~am)+
+  geom_text_repel()
+
+```
+
+
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+
+nrow(genes)
+colnames(genes)
+ncol(genes)
+
+table(genes$State)
+
+round(table(genes$State)/nrow(genes) * 100, 2 )
+```
+I then plot condition 1 against condition 2. 
+
+```{r}
+ggplot(genes)+
+  aes(x=Condition1, y=Condition2)+
+  geom_point()
+```
+I then colored the plot based on the state. 
+
+
+```{r}
+p <- ggplot(genes) + 
+    aes(x=Condition1, y=Condition2, col=State) +
+    geom_point()
+p
+```
+
+Using labs settings, I then altered the color based on the sate.
+
+```{r}
+p + scale_colour_manual( values=c("blue","gray","red") )+
+  labs(title="Gene Expression Changes Upon Drug Treatment", x="Control (no drug)", y="Drug Treatment")
+```
+
+I installed the packages gapminder and dplyr. 
+
+`install.packages("gapminder")`
+`install.packages("dplyr")`
+
+I generated the basic scatter plot, then altered the alpha value. I then altered the color based on continent and size of the dots based on population. 
+
+```{r}
+library(gapminder)
+library(dplyr)
+
+gapminder_2007 <- gapminder %>% filter(year==2007)
+
+ggplot(gapminder_2007) +
+  aes(x= gdpPercap, y=lifeExp, color=continent, size=pop) +
+  geom_point(alpha=0.5)
+
+```
+You can also look at how the plot appears when colorng based on variable population. 
+
+```{r}
+ggplot(gapminder_2007) + 
+  aes(x = gdpPercap, y = lifeExp, color = pop) +
+  geom_point(alpha=0.8)
+```
+I then adjusted point size based on population of each country. 
+
+```{r}
+ggplot(gapminder_2007) + 
+  aes(x = gdpPercap, y = lifeExp, size = pop) +
+  geom_point(alpha=0.5)
+```
+I then adjusted the point sizes to actually reflect the proportionate population sizes. 
+
+
+```{r}
+ggplot(gapminder_2007) + 
+  geom_point(aes(x = gdpPercap, y = lifeExp,
+                 size = pop), alpha=0.5) + 
+  scale_size_area(max_size = 10)
+```
+

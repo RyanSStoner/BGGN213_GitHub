@@ -1,0 +1,61 @@
+---
+title: "R Functions Lab (Class 06)"
+author: "Ryan Stoner (A69034955)"
+format: pdf
+---
+
+My first function :)
+
+```{r}
+add <- function(x,y){
+  x + y
+}
+
+add(1,1)
+add(c(100,1,100),1)
+
+
+```
+
+Write a function to generate a random nucleotide sequences of any length.
+
+```{r}
+
+bases <- c("A", "C", "G", "T")
+
+generate_DNA <- function(x){
+  
+  sample(bases, size=x, replace=TRUE)
+}
+ 
+generate_DNA(12)
+  
+```
+
+I will now repurpose this table to create proteins. 
+
+```{r}
+residues <- unique(bio3d::aa.table$aa1)
+
+generate_protein <- function(x){
+  
+  sequence <- sample(residues, size=x, replace=TRUE)
+  sequence <- paste(sequence, collapse = "")
+  return(sequence)
+}
+ 
+generate_protein(12)
+```
+Generate random protein sequences of length 6 to 12. 
+
+```{r}
+answer <- sapply(6:12, generate_protein)
+answer
+```
+Now to make it searchable in blast.
+
+```{r}
+cat( paste(">id", 6:12, "\n", answer, sep=""), sep="\n")
+```
+
+
